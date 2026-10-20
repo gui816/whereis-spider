@@ -36,3 +36,16 @@
 .spider-reveal { font-size:clamp(42px,8vw,70px); }
 @keyframes peek-bob { from { transform:translateY(1px) rotate(8deg); } to { transform:translateY(-5px) rotate(-5deg); } }
 @media(max-width:560px) { .peek-spider { width:38px;height:38px;top:-6px;right:-1px; } }
+
+/* Restore the compact, balanced object layout and make the hint a paw peeking from behind. */
+.hide-spot { width:clamp(76px, 12vw, 100px); height:clamp(76px, 12vw, 100px); min-width:76px; min-height:76px; overflow:visible; }
+.spot-emoji { position:relative; z-index:2; display:block; font-size:clamp(52px, 9vw, 88px); line-height:1; filter:drop-shadow(0 7px 2px #336d4b25); }
+.peek-paw { position:absolute; z-index:1; width:48px; height:54px; top:17%; right:-10px; transform:rotate(14deg); animation:peek-paw-wave .65s ease-in-out infinite alternate; filter:drop-shadow(0 3px 2px #43306b30); pointer-events:none; }
+.peek-paw svg { width:100%; height:100%; display:block; }
+.hinted .spot-emoji { animation:hint-pulse .8s ease-in-out infinite alternate; }
+@keyframes peek-paw-wave { from { transform:translate(1px,2px) rotate(9deg); } to { transform:translate(4px,-4px) rotate(20deg); } }
+@media(max-width:560px) {
+ .hide-spot { width:78px; height:78px; min-width:70px; min-height:70px; }
+ .spot-emoji { font-size:clamp(50px, 12vw, 76px); }
+ .peek-paw { width:39px; height:45px; right:-5px; top:15%; }
+}
