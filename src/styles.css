@@ -49,3 +49,37 @@
  .spot-emoji { font-size:clamp(50px, 12vw, 76px); }
  .peek-paw { width:39px; height:45px; right:-5px; top:15%; }
 }
+
+/* Final layout pass: six clear, separated tap targets on phone-sized screens. */
+.forest .hide-spot { width:clamp(66px, 10vw, 88px); height:clamp(66px, 10vw, 88px); min-width:66px; min-height:66px; }
+.forest .spot-emoji { font-size:clamp(48px, 8vw, 70px); }
+.forest .spot-leaf { left:8%; top:25%; }
+.forest .spot-flower { right:8%; top:28%; }
+.forest .spot-rock { left:7%; bottom:23%; }
+.forest .spot-mushroom { right:7%; bottom:23%; }
+.forest .spot-bush { left:43%; top:47%; }
+.forest .spot-log { left:43%; bottom:9%; }
+.forest .peek-paw { width:36px; height:42px; top:5%; right:-8px; }
+.forest .spider-reveal { position:absolute; z-index:9; width:58px; height:58px; left:50%; top:50%; display:grid; place-items:center; transform:translate(-50%,-50%); animation:spider-leap-to-center .9s cubic-bezier(.2,.9,.3,1.25) both; }
+.forest .spider-reveal .spider-body { position:relative; top:auto; left:auto; width:52px; height:52px; border-radius:50%; background:radial-gradient(circle at 30% 24%,#c8b5ff 0%,#a38af4 28%,#8159db 78%); box-shadow:inset -5px -7px 0 #6945bd55,inset 3px 4px 0 #ffffff55,0 7px 0 #4f39902b; }
+.forest .spider-reveal .spider-eye { top:14px; width:14px; height:17px; }
+.forest .spider-reveal .eye-left { left:9px; }.forest .spider-reveal .eye-right { right:9px; }
+.forest .spider-reveal .spider-eye i { top:6px; left:5px; width:5px; height:7px; }
+.forest .spider-reveal .spider-smile { left:19px; top:35px; }
+.forest .spider-reveal .spider-blush { top:31px; }
+@keyframes spider-leap-to-center {
+  0% { left:50%; top:50%; transform:translate(-50%,-50%) scale(.3) rotate(-18deg); opacity:.2; }
+  55% { left:50%; top:50%; transform:translate(-50%,-90%) scale(1.25) rotate(8deg); opacity:1; }
+  75% { left:50%; top:50%; transform:translate(-50%,-45%) scale(.9) rotate(-5deg); opacity:1; }
+  100% { left:50%; top:50%; transform:translate(-50%,-50%) scale(1) rotate(0); opacity:1; }
+}
+@media(max-width:560px) {
+ .forest .hide-spot { width:68px; height:68px; min-width:68px; min-height:68px; }
+ .forest .spot-emoji { font-size:52px; }
+ .forest .spot-leaf { left:5%; top:25%; }
+ .forest .spot-flower { right:5%; top:29%; }
+ .forest .spot-rock { left:4%; bottom:23%; }
+ .forest .spot-mushroom { right:4%; bottom:23%; }
+ .forest .spot-bush { left:42%; top:48%; }
+ .forest .spot-log { left:42%; bottom:9%; }
+}
