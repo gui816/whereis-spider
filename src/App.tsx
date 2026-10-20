@@ -129,7 +129,7 @@ export default function App() {
           {showHint && !found && index === target && <span className="peek-paw" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M35 60C31 49 33 40 40 32L49 22Q54 17 58 22Q62 27 56 33L49 42Q45 49 48 60Z" fill="#9C7AF0" stroke="#6748C4" strokeWidth="3" strokeLinejoin="round"/><ellipse cx="44" cy="21" rx="8" ry="10" transform="rotate(-20 44 21)" fill="#B9A4FF" stroke="#6748C4" strokeWidth="2.5"/><ellipse cx="54" cy="17" rx="7" ry="9" transform="rotate(4 54 17)" fill="#B9A4FF" stroke="#6748C4" strokeWidth="2.5"/><ellipse cx="61" cy="23" rx="5" ry="7" fill="#B9A4FF" stroke="#6748C4" strokeWidth="2.5"/><path d="M39 43q7 4 10 0" fill="none" stroke="#DCCFFF" strokeWidth="3" strokeLinecap="round"/></svg></span>}
           <span className="spot-emoji" aria-hidden="true">{spot.emoji}</span>
           {showHint && !found && index === target && <span className="peek-spider" aria-hidden="true"><SpiderArt /></span>}
-          {found && index === target && <span className="spider-reveal" aria-label="Aranha">🕷️</span>}
+          {found && index === target && <span className="spider-reveal" aria-label="Aranha"><SpiderArt /></span>}
         </button>)}
         {found && <div className="spider-hero spider-dancing" aria-hidden="true">
           <span className="spider-thread" /><SpiderArt />
