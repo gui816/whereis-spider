@@ -3,24 +3,13 @@ import { Volume2, VolumeX, RotateCcw, Sparkles, Heart, Download } from 'lucide-r
 
 type Spot = { id: string; label: string; className: string };
 const spots: Spot[] = [
-  { id: 'leaf', label: 'folha', className: 'spot-leaf' },
-  { id: 'flower', label: 'flor', className: 'spot-flower' },
-  { id: 'rock', label: 'pedra', className: 'spot-rock' },
-  { id: 'mushroom', label: 'cogumelo', className: 'spot-mushroom' },
-  { id: 'bush', label: 'arbusto', className: 'spot-bush' },
-  { id: 'log', label: 'tronco', className: 'spot-log' }
+  { id: 'leaf', label: 'folha', emoji: '🍃', className: 'spot-leaf' },
+  { id: 'flower', label: 'flor', emoji: '🌼', className: 'spot-flower' },
+  { id: 'rock', label: 'pedra', emoji: '🪨', className: 'spot-rock' },
+  { id: 'mushroom', label: 'cogumelo', emoji: '🍄', className: 'spot-mushroom' },
+  { id: 'bush', label: 'arbusto', emoji: '🌿', className: 'spot-bush' },
+  { id: 'log', label: 'tronco', emoji: '🪵', className: 'spot-log' }
 ];
-
-function SpotArt({ id }: { id: string }) {
-  switch (id) {
-    case 'leaf': return <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M15 76C10 35 40 8 84 14 88 52 64 84 15 76Z" fill="#55C985" stroke="#278D5A" strokeWidth="4" strokeLinejoin="round"/><path d="M17 78 70 28M40 56 37 34M53 44 73 45M29 67 25 51" fill="none" stroke="#278D5A" strokeWidth="4" strokeLinecap="round"/><path d="M19 73 12 88" stroke="#278D5A" strokeWidth="5" strokeLinecap="round"/></svg>;
-    case 'flower': return <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M50 53Q46 70 50 91" fill="none" stroke="#32985E" strokeWidth="7" strokeLinecap="round"/><ellipse cx="39" cy="78" rx="14" ry="7" transform="rotate(25 39 78)" fill="#66D68A"/>{[[50,25],[68,38],[62,58],[38,58],[31,38]].map(([x,y],i)=><ellipse key={i} cx={x} cy={y} rx="15" ry="18" fill={i%2?'#FF9BC0':'#FFC1D7'} stroke="#F17EA7" strokeWidth="2"/>)}<circle cx="50" cy="42" r="14" fill="#FFD75E" stroke="#F5B83D" strokeWidth="3"/><circle cx="45" cy="40" r="2" fill="#8B6130"/><circle cx="55" cy="40" r="2" fill="#8B6130"/><path d="M46 46Q50 51 54 46" fill="none" stroke="#8B6130" strokeWidth="2.5" strokeLinecap="round"/></svg>;
-    case 'rock': return <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M12 72 19 44 40 26 67 32 87 54 82 78 60 87 29 83Z" fill="#A8B8C4" stroke="#748B9A" strokeWidth="4" strokeLinejoin="round"/><path d="m23 48 19-14 12 4M35 68l10 4M65 49l9 9" fill="none" stroke="#DDE6EA" strokeWidth="5" strokeLinecap="round"/><circle cx="43" cy="61" r="3" fill="#526C7B"/><circle cx="60" cy="61" r="3" fill="#526C7B"/><path d="M45 69q7 7 14 0" fill="none" stroke="#526C7B" strokeWidth="3" strokeLinecap="round"/></svg>;
-    case 'mushroom': return <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M36 49Q29 63 36 84Q50 93 65 83L63 49Z" fill="#FFF1CF" stroke="#D7B77D" strokeWidth="3"/><path d="M12 51Q13 19 48 15Q83 18 89 51Q65 61 50 51Q32 61 12 51Z" fill="#FF777D" stroke="#E95362" strokeWidth="4" strokeLinejoin="round"/><circle cx="36" cy="34" r="6" fill="#FFF1CF"/><circle cx="61" cy="28" r="7" fill="#FFF1CF"/><circle cx="69" cy="45" r="4" fill="#FFF1CF"/><circle cx="46" cy="64" r="3" fill="#8B6244"/><circle cx="57" cy="64" r="3" fill="#8B6244"/><path d="M46 71q5 5 10 0" fill="none" stroke="#8B6244" strokeWidth="2.5" strokeLinecap="round"/></svg>;
-    case 'bush': return <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M13 78Q3 59 22 47Q15 25 37 26Q51 8 65 29Q89 23 85 48Q103 62 85 79Z" fill="#55C985" stroke="#278D5A" strokeWidth="4"/><path d="M22 57q10-10 19 0M59 42q9-8 17 1" fill="none" stroke="#8AE4A5" strokeWidth="5" strokeLinecap="round"/><circle cx="42" cy="61" r="3" fill="#216B4A"/><circle cx="62" cy="61" r="3" fill="#216B4A"/><path d="M45 68q7 7 14 0" fill="none" stroke="#216B4A" strokeWidth="3" strokeLinecap="round"/></svg>;
-    default: return <svg viewBox="0 0 100 100" aria-hidden="true"><path d="M8 45Q8 30 24 30H79Q91 31 91 47V72Q90 85 76 85H22Q8 84 8 70Z" fill="#B77B4F" stroke="#855132" strokeWidth="4"/><path d="M18 41Q49 48 80 40M18 58Q49 65 82 57M20 75Q48 81 80 73" fill="none" stroke="#D9A071" strokeWidth="5" strokeLinecap="round"/><circle cx="43" cy="57" r="3" fill="#643C2B"/><circle cx="58" cy="57" r="3" fill="#643C2B"/><path d="M45 64q5 5 10 0" fill="none" stroke="#643C2B" strokeWidth="2.5" strokeLinecap="round"/></svg>;
-  }
-}
 
 function SpiderArt() {
   return <div className="spider-body"><span className="spider-eye eye-left"><i /></span><span className="spider-eye eye-right"><i /></span><span className="spider-smile" /><span className="spider-blush blush-left" /><span className="spider-blush blush-right" /></div>;
@@ -137,7 +126,8 @@ export default function App() {
         <div className="tree tree-left" aria-hidden="true">🌳</div><div className="tree tree-right" aria-hidden="true">🌴</div>
         <div className="butterfly" aria-hidden="true">🦋</div>
         {spots.map((spot, index) => <button key={spot.id} className={`hide-spot ${spot.className} ${found && index === target ? 'revealed' : ''} ${showHint && index === target ? 'hinted' : ''}`} onClick={() => tapSpot(index)} aria-label={`Procurar atrás de: ${spot.label}`} disabled={found}>
-          <span className="spot-art"><SpotArt id={spot.id} /></span>
+          {showHint && !found && index === target && <span className="peek-paw" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M35 60C31 49 33 40 40 32L49 22Q54 17 58 22Q62 27 56 33L49 42Q45 49 48 60Z" fill="#9C7AF0" stroke="#6748C4" strokeWidth="3" strokeLinejoin="round"/><ellipse cx="44" cy="21" rx="8" ry="10" transform="rotate(-20 44 21)" fill="#B9A4FF" stroke="#6748C4" strokeWidth="2.5"/><ellipse cx="54" cy="17" rx="7" ry="9" transform="rotate(4 54 17)" fill="#B9A4FF" stroke="#6748C4" strokeWidth="2.5"/><ellipse cx="61" cy="23" rx="5" ry="7" fill="#B9A4FF" stroke="#6748C4" strokeWidth="2.5"/><path d="M39 43q7 4 10 0" fill="none" stroke="#DCCFFF" strokeWidth="3" strokeLinecap="round"/></svg></span>}
+          <span className="spot-emoji" aria-hidden="true">{spot.emoji}</span>
           {showHint && !found && index === target && <span className="peek-spider" aria-hidden="true"><SpiderArt /></span>}
           {found && index === target && <span className="spider-reveal" aria-label="Aranha">🕷️</span>}
         </button>)}
@@ -148,7 +138,7 @@ export default function App() {
         {found && <div className="celebration" aria-hidden="true"><span>✨</span><span>💖</span><span>⭐</span><span>🎉</span><span>✨</span></div>}
         <div className="ground" aria-hidden="true"><span>🌱</span><span>🌼</span><span>🍀</span><span>🌷</span><span>🌱</span><span>🌸</span></div>
       </div>
-      <div className="game-footer"><div className="progress-copy"><span className="tiny-heart"><Heart size={16} fill="currentColor" /></span><span>{found ? 'Que boa descoberta!' : 'Toca nos objetos para espreitar'}</span></div>
+      <div className="game-footer"><div className="progress-copy"><span className="tiny-heart"><Heart size={16} fill="currentColor" /></span><span>{found ? 'Que boa descoberta!' : 'Toca nos objetos. Vês uma patinha?'}</span></div>
         <div className="round-actions">{found && <span className="found-pill"><Sparkles size={14} /> Muito bem!</span>}<button className="primary-button" onClick={newRound}><RotateCcw size={18} />{found ? 'Outra vez!' : 'Novo esconderijo'}</button></div>
       </div>
     </section>
