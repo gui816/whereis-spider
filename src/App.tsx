@@ -72,7 +72,7 @@ export default function App() {
   const [found, setFound] = useState(false);
   const [taps, setTaps] = useState(0);
   const [soundOn, setSoundOn] = useState(true);
-  const [message, setMessage] = useState('Olha bem! A aranha vai esconder-se…');
+  const [message, setMessage] = useState(() => translations[detectLanguage()].starting);
   const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [showHint, setShowHint] = useState(false);
   const [freeMode, setFreeMode] = useState(false);
