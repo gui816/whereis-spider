@@ -87,8 +87,9 @@ export default function App() {
   };
   const labels = translations[language].labels.split(',');
   const translatedSpots = spots.map((spot, i) => ({ ...spot, label: labels[i] ?? spot.label }));
-  const pool = (pools[world] ?? pools.forest).map(id => translatedSpots.find(spot => spot.id === id)!).filter(Boolean);
-  const visibleObjects = Array.from({ length: Math.min(settings.count, spots.length) }, (_, i) => pool[i % pool.length]);
+  const orderedPool = (pools[world] ?? pools.forest).map(id => translatedSpots.find(spot => spot.id === id)!).filter(Boolean);
+  const pool = [...orderedPool, ...translatedSpots.filter(spot => !orderedPool.some(item => item.id === spot.id))];
+  const visibleObjects = pool.slice(0, Math.min(settings.count, pool.length));
 
   useEffect(() => {
     const handlePrompt = (event: Event) => { event.preventDefault(); setInstallPrompt(event); };
