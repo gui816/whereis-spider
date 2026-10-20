@@ -1,57 +1,67 @@
 import { useEffect, useRef, useState } from 'react';
-import { Volume2, VolumeX, RotateCcw, Sparkles, Heart, Download } from 'lucide-react';
+import { Volume2, VolumeX, RotateCcw, Sparkles, Heart, Download, Leaf, Waves, Flower2, ToyBrick } from 'lucide-react';
 
-type Spot = { id: string; label: string; emoji: string };
+type Spot = { id: string; label: string; emoji: string; sound: number };
 const spots: Spot[] = [
-  { id: 'leaf', label: 'folha', emoji: '🍃' },
-  { id: 'flower', label: 'flor', emoji: '🌼' },
-  { id: 'rock', label: 'pedra', emoji: '🪨' },
-  { id: 'mushroom', label: 'cogumelo', emoji: '🍄' },
-  { id: 'bush', label: 'arbusto', emoji: '🌿' },
-  { id: 'log', label: 'tronco', emoji: '🪵' },
-  { id: 'acorn', label: 'bolota', emoji: '🌰' },
-  { id: 'cactus', label: 'cato', emoji: '🌵' },
-  { id: 'apple', label: 'maçã', emoji: '🍎' },
-  { id: 'tulip', label: 'tulipa', emoji: '🌷' },
-  { id: 'moss', label: 'trevo', emoji: '☘️' },
-  { id: 'berry', label: 'frutos', emoji: '🫐' },
-  { id: 'pine', label: 'pinheiro', emoji: '🌲' },
-  { id: 'puddle', label: 'poça', emoji: '💧' },
-  { id: 'nest', label: 'ninho', emoji: '🪺' },
-  { id: 'sunflower', label: 'girassol', emoji: '🌻' }
+  { id: 'leaf', label: 'folha', emoji: '🍃', sound: 660 },
+  { id: 'flower', label: 'flor', emoji: '🌼', sound: 740 },
+  { id: 'rock', label: 'pedra', emoji: '🪨', sound: 260 },
+  { id: 'mushroom', label: 'cogumelo', emoji: '🍄', sound: 520 },
+  { id: 'bush', label: 'arbusto', emoji: '🌿', sound: 620 },
+  { id: 'log', label: 'tronco', emoji: '🪵', sound: 320 },
+  { id: 'acorn', label: 'bolota', emoji: '🌰', sound: 400 },
+  { id: 'cactus', label: 'cato', emoji: '🌵', sound: 560 },
+  { id: 'apple', label: 'maçã', emoji: '🍎', sound: 700 },
+  { id: 'tulip', label: 'tulipa', emoji: '🌷', sound: 780 },
+  { id: 'moss', label: 'trevo', emoji: '☘️', sound: 580 },
+  { id: 'berry', label: 'frutos', emoji: '🫐', sound: 820 },
+  { id: 'pine', label: 'pinheiro', emoji: '🌲', sound: 490 },
+  { id: 'puddle', label: 'poça', emoji: '💧', sound: 880 },
+  { id: 'nest', label: 'ninho', emoji: '🪺', sound: 450 },
+  { id: 'sunflower', label: 'girassol', emoji: '🌻', sound: 760 },
+  { id: 'shell', label: 'concha', emoji: '🐚', sound: 690 },
+  { id: 'fish', label: 'peixe', emoji: '🐠', sound: 630 },
+  { id: 'coral', label: 'coral', emoji: '🪸', sound: 570 },
+  { id: 'bubble', label: 'bolha', emoji: '🫧', sound: 900 },
+  { id: 'pillow', label: 'almofada', emoji: '🛏️', sound: 390 },
+  { id: 'teddy', label: 'ursinho', emoji: '🧸', sound: 500 },
+  { id: 'toy', label: 'brinquedo', emoji: '🧸', sound: 610 },
+  { id: 'box', label: 'caixa', emoji: '📦', sound: 300 }
 ];
-const positions = [
-  { left: 14, top: 34 }, { left: 38, top: 34 }, { left: 62, top: 34 }, { left: 86, top: 34 },
-  { left: 14, top: 50 }, { left: 38, top: 50 }, { left: 62, top: 50 }, { left: 86, top: 50 },
-  { left: 14, top: 66 }, { left: 38, top: 66 }, { left: 62, top: 66 }, { left: 86, top: 66 },
-  { left: 14, top: 82 }, { left: 38, top: 82 }, { left: 62, top: 82 }, { left: 86, top: 82 }
+const levels = [
+  { count: 4, visibleMs: 4000 }, { count: 5, visibleMs: 3500 }, { count: 6, visibleMs: 3000 },
+  { count: 8, visibleMs: 2700 }, { count: 10, visibleMs: 2300 }, { count: 12, visibleMs: 1900 },
+  { count: 14, visibleMs: 1600 }, { count: 16, visibleMs: 1300 }, { count: 18, visibleMs: 1100 },
+  { count: 20, visibleMs: 900 }, { count: 22, visibleMs: 800 }, { count: 24, visibleMs: 700 }
 ];
-const levelSettings = [
-  { count: 6, visibleMs: 3000 },
-  { count: 8, visibleMs: 2500 },
-  { count: 10, visibleMs: 2000 },
-  { count: 12, visibleMs: 1500 },
-  { count: 14, visibleMs: 1200 },
-  { count: 16, visibleMs: 1000 }
-];
-const getLevelSettings = (level: number) => levelSettings[Math.min(level - 1, levelSettings.length - 1)] ?? { count: 16, visibleMs: Math.max(450, 1000 - (level - 6) * 100) };
+const settingsFor = (level: number) => levels[Math.min(level - 1, levels.length - 1)] ?? { count: 24, visibleMs: Math.max(500, 700 - (level - levels.length) * 40) };
+const worldFor = (level: number) => level < 4 ? 'forest' : level < 7 ? 'garden' : level < 10 ? 'underwater' : 'playroom';
+const worldNames: Record<string, string> = { forest: 'Floresta encantada', garden: 'Jardim mágico', underwater: 'Fundo do mar', playroom: 'Quarto dos brinquedos' };
+const worldEmojis: Record<string, string> = { forest: '🌳', garden: '🌷', underwater: '🐠', playroom: '🧸' };
 
 function SpiderArt() {
-  return <div className="spider-body"><span className="spider-eye eye-left"><i /></span><span className="spider-eye eye-right"><i /></span><span className="spider-smile" /><span className="spider-blush blush-left" /><span className="spider-blush blush-right" /></div>;
+  return <span className="spider-character" aria-hidden="true">
+    <span className="spider-leg spider-leg-a" /><span className="spider-leg spider-leg-b" /><span className="spider-leg spider-leg-c" /><span className="spider-leg spider-leg-d" />
+    <span className="spider-face"><i className="spider-eye left" /><i className="spider-eye right" /><i className="spider-smile" /><i className="spider-cheek left" /><i className="spider-cheek right" /></span>
+  </span>;
 }
 
 export default function App() {
   const [level, setLevel] = useState(1);
   const [roundId, setRoundId] = useState(0);
-  const [target, setTarget] = useState(() => Math.floor(Math.random() * getLevelSettings(1).count));
+  const [target, setTarget] = useState(() => Math.floor(Math.random() * settingsFor(1).count));
   const [previewing, setPreviewing] = useState(true);
   const [found, setFound] = useState(false);
   const [taps, setTaps] = useState(0);
   const [soundOn, setSoundOn] = useState(true);
-  const [message, setMessage] = useState('A aranha está escondida. Vamos procurá-la!');
+  const [message, setMessage] = useState('Olha bem! A aranha vai esconder-se…');
   const [installPrompt, setInstallPrompt] = useState<any>(null);
   const [showHint, setShowHint] = useState(false);
+  const [freeMode, setFreeMode] = useState(false);
   const audioRef = useRef<AudioContext | null>(null);
+  const settings = settingsFor(level);
+  const world = worldFor(level);
+  const visibleObjects = spots.slice(0, Math.min(settings.count, spots.length));
 
   useEffect(() => {
     const handlePrompt = (event: Event) => { event.preventDefault(); setInstallPrompt(event); };
@@ -59,17 +69,7 @@ export default function App() {
     return () => window.removeEventListener('beforeinstallprompt', handlePrompt);
   }, []);
 
-  useEffect(() => {
-    if (!previewing || found) return;
-    const timer = window.setTimeout(() => {
-      setPreviewing(false);
-      setMessage('Onde se escondeu? Toca no objeto certo!');
-      tone(660, 0.12);
-    }, getLevelSettings(level).visibleMs);
-    return () => window.clearTimeout(timer);
-  }, [roundId, level, previewing, found]);
-
-  const tone = (frequency: number, duration = 0.13, wave: OscillatorType = 'sine', volume = 0.075) => {
+  const tone = (frequency: number, duration = 0.13, volume = 0.06) => {
     if (!soundOn) return;
     try {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
@@ -79,14 +79,14 @@ export default function App() {
       if (ctx.state === 'suspended') void ctx.resume();
       const oscillator = ctx.createOscillator();
       const gain = ctx.createGain();
-      oscillator.type = wave;
+      oscillator.type = 'sine';
       oscillator.frequency.setValueAtTime(frequency, ctx.currentTime);
       gain.gain.setValueAtTime(0.0001, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(volume, ctx.currentTime + 0.02);
       gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
       oscillator.connect(gain); gain.connect(ctx.destination);
       oscillator.start(); oscillator.stop(ctx.currentTime + duration + 0.025);
-    } catch { /* Sound is optional; the game remains playable without it. */ }
+    } catch { /* Audio is optional. */ }
   };
 
   const speak = (text: string) => {
@@ -94,63 +94,62 @@ export default function App() {
     try {
       window.speechSynthesis.cancel();
       const voice = new SpeechSynthesisUtterance(text);
-      voice.lang = 'pt-PT'; voice.rate = 0.82; voice.pitch = 1.16; voice.volume = 0.85;
+      voice.lang = 'pt-PT'; voice.rate = 0.82; voice.pitch = 1.12; voice.volume = 0.85;
       window.speechSynthesis.speak(voice);
     } catch { /* Voice depends on browser/device support. */ }
   };
 
+  useEffect(() => {
+    if (!previewing || found || freeMode) return;
+    const timer = window.setTimeout(() => {
+      setPreviewing(false);
+      setMessage('Onde se escondeu? Toca num objeto!');
+      tone(580, 0.12);
+    }, settings.visibleMs);
+    return () => window.clearTimeout(timer);
+  }, [roundId, level, previewing, found, freeMode]);
+
   const celebrate = () => {
     tone(523, 0.15); window.setTimeout(() => tone(659, 0.15), 120); window.setTimeout(() => tone(784, 0.24), 240);
-    window.setTimeout(() => speak('Encontraste a aranha! Muito bem!'), 350);
+    window.setTimeout(() => speak('Encontraste a aranha! Muito bem!'), 300);
   };
 
   const tapSpot = (index: number) => {
-    if (found || previewing) return;
+    if (found || previewing && !freeMode) return;
+    const spot = visibleObjects[index];
+    if (!spot) return;
+    tone(spot.sound, 0.1, 0.045);
     const attempt = taps + 1;
     setTaps(attempt);
     if (index === target) {
-      setFound(true); setShowHint(false); setMessage('Encontraste a aranha! Muito bem!'); celebrate();
+      setFound(true); setShowHint(false); setMessage('Encontraste a aranha! Muito bem!');
+      celebrate();
     } else {
-      tone(360 + (attempt % 2) * 55, 0.11, 'sine', 0.045);
-      if (attempt === 1) {
-        setMessage('Boa tentativa! Procura mais um bocadinho.');
-        speak('Boa tentativa! Continua a procurar.');
-      } else {
-        setMessage('A patinha está a dar-te uma pista!');
-        setShowHint(true);
-        speak('Olha para a patinha!');
-      }
+      setMessage(attempt === 1 ? 'Boa tentativa! Vamos espreitar mais.' : 'A aranha está a dar-te uma pista!');
+      if (attempt >= 2) { setShowHint(true); speak('Olha para a patinha!'); }
+      else speak('Boa tentativa! Continua a procurar.');
     }
   };
 
-  const newRound = () => {
-    const nextLevel = found ? level + 1 : level;
-    const settings = getLevelSettings(nextLevel);
-    let next = Math.floor(Math.random() * settings.count);
-    if (settings.count > 1 && next === target) next = (next + 1) % settings.count;
-    setLevel(nextLevel);
-    setTarget(next);
-    setFound(false);
-    setPreviewing(true);
-    setRoundId(id => id + 1);
-    setTaps(0);
-    setShowHint(false);
-    setMessage('Olha bem! A aranha vai esconder-se…');
+  const startRound = (nextLevel: number) => {
+    const nextSettings = settingsFor(nextLevel);
+    let nextTarget = Math.floor(Math.random() * Math.min(nextSettings.count, spots.length));
+    if (visibleObjects.length > 1 && nextTarget === target) nextTarget = (nextTarget + 1) % Math.min(nextSettings.count, spots.length);
+    setLevel(nextLevel); setTarget(nextTarget); setFound(false); setPreviewing(!freeMode);
+    setRoundId(id => id + 1); setTaps(0); setShowHint(false);
+    setMessage(freeMode ? 'Vamos brincar! Toca nos objetos.' : 'Olha bem! A aranha vai esconder-se…');
     tone(440, 0.12);
   };
 
+  const nextRound = () => startRound(found && !freeMode ? level + 1 : level);
   const toggleSound = () => {
     setSoundOn(value => {
       if (value && 'speechSynthesis' in window) window.speechSynthesis.cancel();
       return !value;
     });
   };
-
   const install = async () => {
-    if (!installPrompt) {
-      setMessage('Para instalar, abre o menu do navegador e escolhe “Adicionar ao ecrã principal”.');
-      return;
-    }
+    if (!installPrompt) { setMessage('Para instalar, abre o menu do navegador e escolhe “Adicionar ao ecrã principal”.'); return; }
     await installPrompt.prompt(); setInstallPrompt(null);
   };
 
@@ -161,35 +160,41 @@ export default function App() {
       <button className="icon-button" aria-label={soundOn ? 'Desligar som' : 'Ligar som'} onClick={toggleSound}>{soundOn ? <Volume2 /> : <VolumeX />}</button>
     </header>
     <section className="game-card" aria-label="Jogo de procurar a aranha">
-      <div className="game-intro"><div className="sun" aria-hidden="true">☀️</div><div>
-        <span className="level-label"><Sparkles size={15} /> A FLORESTA AMIGA · NÍVEL {level}</span>
-        <h2>{found ? 'Apanhaste-me!' : previewing ? 'Olha bem para a aranha!' : 'Onde se escondeu?'}</h2><p aria-live="polite">{message}</p>
-        <div className="level-meta"><span>{getLevelSettings(level).count} objetos</span><span>Aranha visível: {(getLevelSettings(level).visibleMs / 1000).toLocaleString('pt-PT')} s</span></div>
-      </div></div>
-      <div className={`forest ${found ? 'forest-found' : ''}`}>
-        <div className="cloud cloud-one" aria-hidden="true" /><div className="cloud cloud-two" aria-hidden="true" />
-        <div className="hill hill-back" aria-hidden="true" /><div className="hill hill-front" aria-hidden="true" />
-        <div className="tree tree-left" aria-hidden="true">🌳</div><div className="tree tree-right" aria-hidden="true">🌴</div>
-        <div className="butterfly" aria-hidden="true">🦋</div>
-        {spots.slice(0, getLevelSettings(level).count).map((spot, index) => <button key={spot.id} style={{ left: `${positions[index].left}%`, top: `${positions[index].top}%` }} className={`hide-spot ${previewing && index === target ? 'preview-target' : ''} ${found && index === target ? 'revealed' : ''} ${showHint && index === target ? 'hinted' : ''}`} onClick={() => tapSpot(index)} aria-label={`Procurar atrás de: ${spot.label}`} disabled={found || previewing}>
-          {showHint && !found && index === target && <span className="peek-paw" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M35 60C31 49 33 40 40 32L49 22Q54 17 58 22Q62 27 56 33L49 42Q45 49 48 60Z" fill="#9C7AF0" stroke="#6748C4" strokeWidth="3" strokeLinejoin="round"/><ellipse cx="44" cy="21" rx="8" ry="10" transform="rotate(-20 44 21)" fill="#B9A4FF" stroke="#6748C4" strokeWidth="2.5"/><ellipse cx="54" cy="17" rx="7" ry="9" transform="rotate(4 54 17)" fill="#B9A4FF" stroke="#6748C4" strokeWidth="2.5"/><ellipse cx="61" cy="23" rx="5" ry="7" fill="#B9A4FF" stroke="#6748C4" strokeWidth="2.5"/><path d="M39 43q7 4 10 0" fill="none" stroke="#DCCFFF" strokeWidth="3" strokeLinecap="round"/></svg></span>}
-          <span className="spot-emoji" aria-hidden="true">{spot.emoji}</span>
-          {previewing && index === target && <span className="peek-spider spider-preview" aria-label="Aranha"><SpiderArt /></span>
-          }
-          {showHint && !found && index === target && <span className="peek-spider" aria-hidden="true"><SpiderArt /></span>}
-          {found && index === target && <span className="spider-reveal" aria-label="Aranha"><SpiderArt /></span>}
-        </button>)}
-        {found && <div className="spider-hero spider-dancing" aria-hidden="true">
-          <span className="spider-thread" /><SpiderArt />
-          <span className="spider-leg leg-1" /><span className="spider-leg leg-2" /><span className="spider-leg leg-3" /><span className="spider-leg leg-4" /><span className="spider-leg leg-5" /><span className="spider-leg leg-6" />
-        </div>}
-        {found && <div className="celebration" aria-hidden="true"><span>✨</span><span>💖</span><span>⭐</span><span>🎉</span><span>✨</span></div>}
-        <div className="ground" aria-hidden="true"><span>🌱</span><span>🌼</span><span>🍀</span><span>🌷</span><span>🌱</span><span>🌸</span></div>
+      <div className="game-intro">
+        <div className="sun" aria-hidden="true">{worldEmojis[world]}</div>
+        <div className="intro-copy">
+          <span className="level-label"><Sparkles size={15} /> {worldNames[world]} · NÍVEL {level}</span>
+          <h2>{found ? 'Apanhaste-me!' : freeMode ? 'Vamos brincar!' : previewing ? 'Olha bem para a aranha!' : 'Onde se escondeu?'}</h2>
+          <p aria-live="polite">{message}</p>
+          <div className="level-meta"><span>{settings.count} objetos</span><span>{freeMode ? 'Modo livre' : 'Aranha visível: ' + (settings.visibleMs / 1000).toLocaleString('pt-PT') + ' s'}</span></div>
+        </div>
       </div>
-      <div className="game-footer"><div className="progress-copy"><span className="tiny-heart"><Heart size={16} fill="currentColor" /></span><span>{found ? 'Que boa descoberta!' : 'Toca nos objetos. Vês uma patinha?'}</span></div>
-        <div className="round-actions">{found && <span className="found-pill"><Sparkles size={14} /> Muito bem!</span>}<button className="primary-button" onClick={newRound}><RotateCcw size={18} />{found ? 'Próximo nível!' : 'Repetir nível'}</button></div>
+      <div className={`scene scene-${world} ${found ? 'scene-found' : ''}`} aria-label={worldNames[world]}>
+        <div className="scene-sky" aria-hidden="true" />
+        <div className="scene-cloud cloud-one" aria-hidden="true" /><div className="scene-cloud cloud-two" aria-hidden="true" />
+        <div className="scene-backdrop" aria-hidden="true"><span className="scene-decoration deco-one">{world === 'underwater' ? '🪸' : world === 'playroom' ? '🧸' : '🌳'}</span><span className="scene-decoration deco-two">{world === 'underwater' ? '🐠' : world === 'playroom' ? '🪁' : '🌴'}</span></div>
+        <div className="scene-ground" aria-hidden="true" />
+        <div className="scene-sparkle" aria-hidden="true">✦</div>
+        <div className={`object-grid object-count-${visibleObjects.length}`}>
+          {visibleObjects.map((spot, index) => <button key={spot.id} className={`object-button ${previewing && index === target && !freeMode ? 'object-preview' : ''} ${showHint && !found && index === target ? 'object-hinted' : ''} ${found && index === target ? 'object-found' : ''}`} onClick={() => tapSpot(index)} aria-label={`Espreitar ${spot.label}`} disabled={found || previewing && !freeMode}>
+            <span className="object-shadow" aria-hidden="true" />
+            <span className="object-emoji" aria-hidden="true">{spot.emoji}</span>
+            {previewing && index === target && !freeMode && <span className="spider-peek"><SpiderArt /></span>}
+            {showHint && !found && index === target && <span className="paw-hint" aria-hidden="true">🐾</span>}
+            {found && index === target && <span className="spider-discovery"><SpiderArt /></span>}
+          </button>)}
+        </div>
+        {found && <div className="celebration" aria-hidden="true"><span>✨</span><span>💖</span><span>⭐</span><span>🎉</span><span>✨</span></div>}
+        <div className="scene-foreground" aria-hidden="true">{world === 'underwater' ? '🫧 🐚 🫧' : world === 'playroom' ? '🧸 🧩 🚂' : '🌼 🍀 🌷 🍀 🌼'}</div>
+      </div>
+      <div className="game-footer">
+        <div className="progress-copy"><span className="tiny-heart"><Heart size={16} fill="currentColor" /></span><span>{found ? 'Que boa descoberta!' : freeMode ? 'Toca e descobre os objetos!' : showHint ? 'Segue a patinha!' : previewing ? 'Olha bem para a aranha!' : 'Toca nos objetos para procurar'}</span></div>
+        <div className="round-actions">
+          <button className={`mode-button ${freeMode ? 'mode-active' : ''}`} onClick={() => { const next = !freeMode; setFreeMode(next); setFound(false); setShowHint(false); setPreviewing(!next); setMessage(next ? 'Modo livre: explora tudo!' : 'Olha bem! A aranha vai esconder-se…'); setRoundId(id => id + 1); }} aria-pressed={freeMode}>{freeMode ? <Waves size={16} /> : <Leaf size={16} />}{freeMode ? 'Modo livre' : 'Desafio'}</button>
+          <button className="primary-button" onClick={nextRound}><RotateCcw size={18} />{found && !freeMode ? 'Próximo nível!' : 'Repetir'}</button>
+        </div>
       </div>
     </section>
-    <footer className="bottom-bar"><p>Um pequeno jogo para brincar em conjunto 💚</p><button className="install-button" onClick={install}><Download size={16} /> Instalar</button></footer>
+    <footer className="bottom-bar"><p>Brincar, descobrir e aprender 💚</p><button className="install-button" onClick={install}><Download size={16} /> Instalar</button></footer>
   </main>;
 }
