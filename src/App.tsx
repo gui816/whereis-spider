@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Volume2, VolumeX, RotateCcw, Sparkles, Heart, Download, Leaf, Waves, Flower2, ToyBrick } from 'lucide-react';
+import { Volume2, VolumeX, RotateCcw, Sparkles, Heart, Download, Leaf, Waves } from 'lucide-react';
 
 type Spot = { id: string; label: string; emoji: string; sound: number };
 const spots: Spot[] = [
