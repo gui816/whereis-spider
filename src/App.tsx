@@ -46,8 +46,22 @@ export default function App() {
     } catch { /* Sound is optional; the game remains playable without it. */ }
   };
 
+  const speak = (text: string) => {
+    if (!soundOn || !('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const voice = new SpeechSynthesisUtterance(text);
+      voice.lang = 'pt-PT';
+      voice.rate = 0.82;
+      voice.pitch = 1.12;
+      voice.volume = 0.85;
+      window.speechSynthesis.speak(voice);
+    } catch { /* Voice is optional and depends on the device. */ }
+  };
+
   const celebrate = () => {
     tone(523); window.setTimeout(() => tone(659), 100); window.setTimeout(() => tone(784, 0.22), 210);
+    window.setTimeout(() => speak('Encontraste a aranha! Muito bem!'), 250);
   };
 
   const tapSpot = (index: number) => {
@@ -56,8 +70,11 @@ export default function App() {
     if (index === target) {
       setFound(true); setMessage('Encontraste a aranha! Muito bem! 🎉'); celebrate();
     } else {
-      setMessage(['Vamos procurar noutro sítio!', 'A aranha continua escondida!', 'Tenta mais uma vez!'][taps % 3]);
-      tone(330, 0.08); setShowHint(taps >= 2);
+      setMessage(taps >= 2 ? 'Olha com atenção… vê a pista a brilhar!' : 'Boa tentativa! Vamos procurar noutro sítio!');
+      tone(taps >= 2 ? 392 : 330, 0.12);
+      setShowHint(taps >= 1);
+      if (taps === 1) speak('Continua a procurar!');
+      if (taps >= 2) speak('Está a brilhar! Toca aí!');
     }
   };
 
@@ -85,7 +102,7 @@ export default function App() {
     <section className="game-card" aria-label="Jogo de procurar a aranha">
       <div className="game-intro"><div className="sun" aria-hidden="true">☀️</div><div>
         <span className="level-label"><Sparkles size={15} /> A FLORESTA AMIGA</span>
-        <h2>{found ? 'Apanhaste-me!' : 'Onde me escondi?'}</h2><p aria-live="polite">{message}</p>
+        <h2>{found ? 'Apanhaste-me!' : 'Vamos encontrar a aranha!'}</h2><p aria-live="polite">{message}</p>
       </div></div>
       <div className={`forest ${found ? 'forest-found' : ''}`}>
         <div className="cloud cloud-one" aria-hidden="true"/><div className="cloud cloud-two" aria-hidden="true"/>
@@ -97,15 +114,15 @@ export default function App() {
           {found && index === target && <span className="spider-reveal" aria-label="Aranha">🕷️</span>}
           {!found && showHint && index === target && <span className="hint-sparkle" aria-hidden="true">✨</span>}
         </button>)}
-        <div className={`spider-hero ${found ? 'spider-dancing' : 'spider-peek'}`} aria-hidden="true">
+        {found && <div className="spider-hero spider-dancing" aria-hidden="true">
           <span className="spider-thread"/>
           <div className="spider-body"><span className="spider-eye eye-left"><i/></span><span className="spider-eye eye-right"><i/></span><span className="spider-smile"/><span className="spider-blush blush-left"/><span className="spider-blush blush-right"/></div>
           <span className="spider-leg leg-1"/><span className="spider-leg leg-2"/><span className="spider-leg leg-3"/><span className="spider-leg leg-4"/><span className="spider-leg leg-5"/><span className="spider-leg leg-6"/>
-        </div>
+        </div>}
         {found && <div className="celebration" aria-hidden="true"><span>✨</span><span>💖</span><span>⭐</span><span>🎉</span><span>✨</span></div>}
         <div className="ground" aria-hidden="true"><span>🌱</span><span>🌼</span><span>🍀</span><span>🌷</span><span>🌱</span><span>🌸</span></div>
       </div>
-      <div className="game-footer"><div className="progress-copy"><span className="tiny-heart"><Heart size={16} fill="currentColor"/></span><span>{found ? 'Que boa descoberta!' : 'Toca nos objetos para procurar'}</span></div>
+      <div className="game-footer"><div className="progress-copy"><span className="tiny-heart"><Heart size={16} fill="currentColor"/></span><span>{found ? 'Que boa descoberta!' : 'Toca nos objetos para os espreitar'}</span></div>
         <div className="round-actions">{found && <span className="found-pill"><Sparkles size={14}/> Muito bem!</span>}<button className="primary-button" onClick={newRound}><RotateCcw size={18}/>{found ? 'Outra vez!' : 'Novo esconderijo'}</button></div>
       </div>
     </section>
