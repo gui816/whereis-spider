@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Volume2, VolumeX, RotateCcw, Sparkles, Heart, Download } from 'lucide-react';
 
-type Spot = { id: string; label: string; className: string };
+type Spot = { id: string; label: string; emoji: string; className: string };
 const spots: Spot[] = [
   { id: 'leaf', label: 'folha', emoji: '🍃', className: 'spot-leaf' },
   { id: 'flower', label: 'flor', emoji: '🌼', className: 'spot-flower' },
