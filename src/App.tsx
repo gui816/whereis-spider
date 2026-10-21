@@ -69,6 +69,7 @@ export default function App() {
   const [roundId, setRoundId] = useState(0);
   const [target, setTarget] = useState(() => Math.floor(Math.random() * settingsFor(1).count));
   const [previewing, setPreviewing] = useState(true);
+  const [countdown, setCountdown] = useState(() => Math.ceil(settingsFor(1).visibleMs / 1000));
   const [found, setFound] = useState(false);
   const [taps, setTaps] = useState(0);
   const [soundOn, setSoundOn] = useState(true);
@@ -128,13 +129,20 @@ export default function App() {
   };
 
   useEffect(() => {
-    if (!previewing || found || freeMode) return;
+    if (!previewing || found || freeMode) { if (freeMode || found) setCountdown(0); return; }
+    const startedAt = Date.now();
+    setCountdown(Math.ceil(settings.visibleMs / 1000));
+    const tick = window.setInterval(() => {
+      const remaining = Math.max(0, settings.visibleMs - (Date.now() - startedAt));
+      setCountdown(Math.ceil(remaining / 1000));
+    }, 150);
     const timer = window.setTimeout(() => {
       setPreviewing(false);
+      setCountdown(0);
       setMessage(t('searching'));
       tone(580, 0.12);
     }, settings.visibleMs);
-    return () => window.clearTimeout(timer);
+    return () => { window.clearInterval(tick); window.clearTimeout(timer); };
   }, [roundId, level, previewing, found, freeMode, language]);
 
   const celebrate = () => {
@@ -171,7 +179,7 @@ export default function App() {
     const nextSettings = settingsFor(nextLevel);
     let nextTarget = Math.floor(Math.random() * Math.min(nextSettings.count, spots.length));
     if (visibleObjects.length > 1 && nextTarget === target) nextTarget = (nextTarget + 1) % Math.min(nextSettings.count, spots.length);
-    setLevel(nextLevel); setTarget(nextTarget); setFound(false); setPreviewing(!freeMode);
+    setLevel(nextLevel); setTarget(nextTarget); setFound(false); setPreviewing(!freeMode); setCountdown(freeMode ? 0 : Math.ceil(nextSettings.visibleMs / 1000));
     setRoundId(id => id + 1); setTaps(0); setShowHint(false);
     setMessage(freeMode ? t('freeMessage') : t('starting'));
     tone(440, 0.12);
@@ -208,9 +216,10 @@ export default function App() {
       <div className={`scene scene-${world} ${found ? 'scene-found' : ''}`} aria-label={t(worldNames[world])}>
         <div className="scene-sky" aria-hidden="true" />
         <div className="scene-cloud cloud-one" aria-hidden="true" /><div className="scene-cloud cloud-two" aria-hidden="true" />
-        <div className="scene-backdrop" aria-hidden="true"><span className="scene-decoration deco-one">{world === 'underwater' ? '🪸' : world === 'playroom' ? '🧸' : '🌳'}</span><span className="scene-decoration deco-two">{world === 'underwater' ? '🐠' : world === 'playroom' ? '🪁' : '🌴'}</span></div>
+        <div className="scene-backdrop" aria-hidden="true"><span className="scene-decoration deco-one">{world === 'underwater' ? '🪸' : world === 'playroom' ? '🧸' : world === 'garden' ? '🌻' : '🌳'}</span><span className="scene-decoration deco-two">{world === 'underwater' ? '🐠' : world === 'playroom' ? '🪁' : world === 'garden' ? '🌷' : '🌴'}</span><span className="scene-decoration deco-three">{world === 'underwater' ? '🫧' : world === 'playroom' ? '🧩' : world === 'garden' ? '🦋' : '🍄'}</span></div>
         <div className="scene-ground" aria-hidden="true" />
         <div className="scene-sparkle" aria-hidden="true">✦</div>
+        {previewing && !freeMode && !found && <div className="countdown-badge" aria-live="off"><span className="countdown-number">{countdown}</span><span className="countdown-dots">{Array.from({length: Math.ceil(settings.visibleMs / 1000)}, (_, i) => <i key={i} className={i < countdown ? 'dot-active' : ''} />)}</span></div>}
         <div className={`object-grid object-count-${visibleObjects.length}`}>
           {visibleObjects.map((spot, index) => <button key={spot.id} className={`object-button ${previewing && index === target && !freeMode ? 'object-preview' : ''} ${showHint && !found && index === target ? 'object-hinted' : ''} ${found && index === target ? 'object-found' : ''}`} onClick={() => tapSpot(index)} aria-label={`Espreitar ${spot.label}`} disabled={found || previewing && !freeMode}>
             <span className="object-shadow" aria-hidden="true" />
@@ -226,7 +235,7 @@ export default function App() {
       <div className="game-footer">
         <div className="progress-copy"><span className="tiny-heart"><Heart size={16} fill="currentColor" /></span><span>{found ? t('goodFind') : freeMode ? t('freePrompt') : showHint ? t('hintPrompt') : previewing ? t('look') : t('prompt')}</span></div>
         <div className="round-actions">
-          <button className={`mode-button ${freeMode ? 'mode-active' : ''}`} onClick={() => { const next = !freeMode; setFreeMode(next); setFound(false); setShowHint(false); setPreviewing(!next); setMessage(next ? 'Modo livre: explora tudo!' : 'Olha bem! A aranha vai esconder-se…'); setRoundId(id => id + 1); }} aria-pressed={freeMode}>{freeMode ? <Waves size={16} /> : <Leaf size={16} />}{freeMode ? t('freeButton') : t('challenge')}</button>
+          <button className={`mode-button ${freeMode ? 'mode-active' : ''}`} onClick={() => { const next = !freeMode; setFreeMode(next); setFound(false); setShowHint(false); setPreviewing(!next); setCountdown(next ? 0 : Math.ceil(settings.visibleMs / 1000)); setMessage(next ? 'Modo livre: explora tudo!' : 'Olha bem! A aranha vai esconder-se…'); setRoundId(id => id + 1); }} aria-pressed={freeMode}>{freeMode ? <Waves size={16} /> : <Leaf size={16} />}{freeMode ? t('freeButton') : t('challenge')}</button>
           <button className="primary-button" onClick={nextRound}><RotateCcw size={18} />{found && !freeMode ? t('next') : t('repeat')}</button>
         </div>
       </div>
