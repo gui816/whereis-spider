@@ -34,3 +34,36 @@
 .scene-playroom .scene-decoration{filter:drop-shadow(0 5px 2px #795b5a30)}
 @keyframes underwater-drift{from{transform:translateY(-3px)}to{transform:translateY(9px)}}
 @media(max-width:560px){.language-select{min-height:35px;padding:0 7px;font-size:11px}.topbar{gap:7px}}
+
+/* A gentle, glanceable countdown for toddlers */
+.countdown-badge{position:absolute;z-index:8;top:5%;right:5%;width:clamp(54px,12vw,76px);height:clamp(54px,12vw,76px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:3px solid #ffffffd9;border-radius:50%;background:linear-gradient(145deg,#fff9cf,#ffe58d);box-shadow:0 5px 0 #d7b95b55,0 7px 18px #426d5a20;pointer-events:none;animation:countdown-pop .22s ease-out}
+.countdown-number{font-size:clamp(24px,6vw,36px);line-height:1;font-weight:900;color:#8b6b36;text-shadow:0 1px #fff}
+.countdown-dots{display:flex;gap:3px;align-items:center;justify-content:center}
+.countdown-dots i{display:block;width:5px;height:5px;border-radius:50%;background:#cdbb8d;opacity:.6}
+.countdown-dots i.dot-active{background:#f39b45;opacity:1;box-shadow:0 0 0 1px #fff8}
+@keyframes countdown-pop{from{transform:scale(.82);opacity:.6}to{transform:scale(1);opacity:1}}
+.scene-backdrop{align-items:flex-start}
+.scene-decoration{position:relative}
+.deco-three{align-self:flex-end;transform:translateY(8px);font-size:clamp(35px,8vw,65px);opacity:.82}
+.scene-forest .scene-backdrop .deco-one{align-self:flex-end;transform:translateY(5px) scale(.94)}
+.scene-forest .scene-backdrop .deco-two{align-self:flex-start}
+.scene-forest .scene-backdrop .deco-three{align-self:center}
+.scene-garden .scene-backdrop{inset:29% 1% 27%;align-items:center}
+.scene-garden .scene-backdrop .deco-one{align-self:flex-start}
+.scene-garden .scene-backdrop .deco-two{align-self:flex-end}
+.scene-garden .scene-backdrop .deco-three{align-self:center}
+.scene-underwater .scene-backdrop{inset:26% 1% 24%;align-items:center}
+.scene-underwater .scene-backdrop .deco-one{align-self:flex-end;transform:translateY(8px)}
+.scene-underwater .scene-backdrop .deco-two{align-self:center}
+.scene-underwater .scene-backdrop .deco-three{align-self:flex-start;animation:underwater-drift 3s ease-in-out infinite alternate}
+.scene-underwater .scene-ground:after{content:"";position:absolute;left:5%;right:5%;bottom:10%;height:22%;border-radius:50% 50% 0 0;background:repeating-linear-gradient(90deg,#1c8e9c33 0 8px,transparent 8px 24px);opacity:.55}
+.scene-playroom .scene-backdrop{inset:23% 1% 31%;align-items:center}
+.scene-playroom .scene-backdrop .deco-one{align-self:flex-start}
+.scene-playroom .scene-backdrop .deco-two{align-self:flex-end}
+.scene-playroom .scene-backdrop .deco-three{align-self:center}
+.scene-playroom .scene-ground:after{content:"";position:absolute;left:14%;right:14%;bottom:13%;height:28%;border-radius:45%;background:repeating-linear-gradient(0deg,#ffffff30 0 3px,transparent 3px 17px);border:3px solid #fff3}
+.scene .object-button{align-self:end}
+.scene .object-shadow{bottom:8%;height:9px;background:#24543b45;filter:blur(4px)}
+.scene-underwater .object-shadow{background:#176c8450}
+.scene-playroom .object-shadow{background:#8d5b4650}
+@media(max-width:560px){.countdown-badge{top:4%;right:4%;width:52px;height:52px;border-width:2px}.countdown-number{font-size:25px}.countdown-dots i{width:4px;height:4px}}
